@@ -121,7 +121,7 @@ export async function searchMovie(
 export async function getPopular(page?: number): Promise<TMDBSearchResult[]> {
   page = page || 1;
   const { data: popular } = await tmdb.get(
-    `/search/movie/popular?page=${page}`
+    `/movie/popular?page=${page}`
   );
 
   return popular.results;
