@@ -111,9 +111,15 @@ export async function searchMovie(
   page?: number
 ): Promise<TMDBSearchResult[]> {
   page = page || 1;
-  const { data: searchResults } = await tmdb.get(
+  let { data: searchResults } = await tmdb.get(
     `/search/movie?query=${query}&page=${page}`
   );
+
+  for(let result of searchResults.results) 
+  {
+    result.backdrop_path = `https://image.tmdb.org/t/p/original${result.backdrop_path}`;
+    result.poster_path = `https://image.tmdb.org/t/p/original${result.poster_path}`;
+  }
 
   return searchResults.results;
 }
