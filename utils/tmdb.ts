@@ -130,5 +130,12 @@ export async function getPopular(page?: number): Promise<TMDBSearchResult[]> {
     `/movie/popular?page=${page}`
   );
 
+
+  for(let result of popular.results) 
+  {
+    result.backdrop_path = `https://image.tmdb.org/t/p/original${result.backdrop_path}`;
+    result.poster_path = `https://image.tmdb.org/t/p/original${result.poster_path}`;
+  }
+
   return popular.results;
 }
