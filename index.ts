@@ -800,23 +800,38 @@ function findBestFlixHQMatch(
 app.get("/search-movie", async (req, res) => {
   const { query, page = 1 } = req.query;
   console.log(query, page)
+  try {
   if (query) {
     const searchResults = await searchMovie(query as string, page as number);
     res.status(200).json(searchResults);
   } else {
     res.status(400);
   }
+} catch (e) {
+    console.error("Error searching movies:", e);
+    res.status(500).json({ error: "Failed to search movies" });
+  }   
 });
 
 app.get("/movie-details", async (req, res) => {
   const { id } = req.query;
+  try {
   const movieDetails = await getMovieDetails(id as string);
   res.status(200).json(movieDetails);
+  }catch (e) {
+    console.error("Error fetching movie details:", e);
+    res.status(500).json({ error: "Failed to fetch movie details" });
+  }
 });
 
 app.get("/get-popular", async (req, res) => {
   const { page = 1 } = req.query;
+  try {
   const popularMovies = await getPopular(page as number);
   res.status(200).json(popularMovies);
+  }catch (e) {
+    console.error("Error fetching popular movies:", e);
+    res.status(500).json({ error: "Failed to fetch popular movies" });
+  }
 });
 
