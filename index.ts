@@ -10,6 +10,7 @@ import { Redis } from "ioredis";
 import dotenv from "dotenv";
 import cacheUtils from "./utils/cache";
 import { searchMovie, getMovieDetails, getPopular } from "./utils/tmdb";
+import retry from "./utils/retry";
 
 // Load environment variables from .env file
 dotenv.config();
@@ -802,7 +803,7 @@ app.get("/search-movie", async (req, res) => {
   console.log(query, page)
   try {
   if (query) {
-    const searchResults = await searchMovie(query as string, page as number);
+    const searchResults = await retry(async() => await searchMovie(query as string, page as number));
     res.status(200).json(searchResults);
   } else {
     res.status(400);
@@ -816,7 +817,7 @@ app.get("/search-movie", async (req, res) => {
 app.get("/movie-details", async (req, res) => {
   const { id } = req.query;
   try {
-  const movieDetails = await getMovieDetails(id as string);
+  const movieDetails = await retry(async() => await getMovieDetails(id as string));
   res.status(200).json(movieDetails);
   }catch (e) {
     console.error("Error fetching movie details:", e);
@@ -827,7 +828,7 @@ app.get("/movie-details", async (req, res) => {
 app.get("/get-popular", async (req, res) => {
   const { page = 1 } = req.query;
   try {
-  const popularMovies = await getPopular(page as number);
+  const popularMovies = await retry(async() => await getPopular(page as number));
   res.status(200).json(popularMovies);
   }catch (e) {
     console.error("Error fetching popular movies:", e);
